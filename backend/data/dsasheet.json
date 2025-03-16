@@ -1,0 +1,61 @@
+
+{
+  "topics": [
+    {
+      "name": "Array",
+      "slug": "array",
+      "description": "Linear data structures that store elements of the same type in contiguous memory locations.",
+      "icon": "📊",
+      "questions": [
+        {
+          "title": "Find first and last position of an element",
+          "link": "https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/",
+          "difficulty": "Medium"
+        },
+        {
+          "title": "Find square root of an integer",
+          "link": "https://leetcode.com/problems/sqrtx/",
+          "difficulty": "Easy"
+        },
+        {
+          "title": "Find Peak Element",
+          "link": "https://leetcode.com/problems/find-peak-element/solution/",
+          "difficulty": "Medium"
+        },
+        {
+          "title": "Find Median of two sorted arrays",
+          "link": "https://leetcode.com/problems/median-of-two-sorted-arrays/",
+          "difficulty": "Hard"
+        },
+        {
+          "title": "Single element in a sorted array",
+          "link": "https://leetcode.com/problems/single-element-in-a-sorted-array/",
+          "difficulty": "Medium"
+        }
+      ]
+    },
+    {
+      "name": "String",
+      "slug": "string",
+      "description": "Sequences of characters used to represent text.",
+      "icon": "🔤",
+      "questions": [
+        {
+          "title": "Reverse String",
+          "link": "https://leetcode.com/problems/reverse-string/",
+          "difficulty": "Easy"
+        },
+        {
+          "title": "Valid Anagram",
+          "link": "https://leetcode.com/problems/valid-anagram/",
+          "difficulty": "Easy"
+        },
+        {
+          "title": "Longest Substring Without Repeating Characters",
+          "link": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+          "difficulty": "Medium"
+        }
+      ]
+    }
+  ]
+}
