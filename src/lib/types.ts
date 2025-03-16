@@ -8,6 +8,8 @@ export interface Question {
   url?: string;
   link?: string;
   difficulty?: Difficulty;
+  topicName?: string;
+  topicSlug?: string;
 }
 
 export interface Topic {
@@ -17,6 +19,11 @@ export interface Topic {
   description?: string;
   icon?: string;
   questionCount?: number;
+  questions: Question[];
+}
+
+export interface SearchResult {
+  topics: Topic[];
   questions: Question[];
 }
 
