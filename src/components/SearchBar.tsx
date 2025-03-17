@@ -5,7 +5,11 @@ import { Input } from "./ui/input";
 import { searchTopicsAndQuestions } from '../lib/api';
 import { SearchResult } from '../lib/types';
 
-const SearchBar = () => {
+interface SearchBarProps {
+  onClose?: () => void;
+}
+
+const SearchBar = ({ onClose }: SearchBarProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState<SearchResult>({ topics: [], questions: [] });
   const [isSearching, setIsSearching] = useState(false);
@@ -16,6 +20,7 @@ const SearchBar = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowResults(false);
+        if (onClose) onClose();
       }
     };
 
@@ -23,7 +28,7 @@ const SearchBar = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [onClose]);
 
   useEffect(() => {
     const debounceTimeout = setTimeout(async () => {
@@ -102,7 +107,10 @@ const SearchBar = () => {
                             <Link
                               to={`/topic/${topic.slug}`}
                               className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                              onClick={() => setShowResults(false)}
+                              onClick={() => {
+                                setShowResults(false);
+                                if (onClose) onClose();
+                              }}
                             >
                               {topic.name}
                             </Link>
@@ -118,12 +126,15 @@ const SearchBar = () => {
                         Questions
                       </h3>
                       <ul>
-                        {results.questions.map((question) => (
-                          <li key={question.id}>
+                        {results.questions.map((question, index) => (
+                          <li key={question.id || `question-${index}`}>
                             <Link
                               to={`/topic/${question.topicSlug}`}
                               className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                              onClick={() => setShowResults(false)}
+                              onClick={() => {
+                                setShowResults(false);
+                                if (onClose) onClose();
+                              }}
                             >
                               <div className="font-medium">{question.title}</div>
                               <div className="text-sm text-gray-500">

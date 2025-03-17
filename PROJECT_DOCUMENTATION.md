@@ -3,7 +3,7 @@
 
 ## Project Overview
 
-This project is a Data Structures and Algorithms (DSA) sheet website that displays programming problems organized by topics. The application consists of a frontend built with React and a backend API powered by MongoDB.
+This project is a Data Structures and Algorithms (DSA) sheet website that displays programming problems organized by topics. The application uses JSON data for storing questions information.
 
 ## Project Structure
 
@@ -16,9 +16,7 @@ This project is a Data Structures and Algorithms (DSA) sheet website that displa
 │   ├── pages/                # Page components
 │   └── ...
 └── backend/                  # Express backend application
-    ├── config/               # Database configuration
-    ├── data/                 # Initial seed data (JSON)
-    ├── models/               # MongoDB schemas
+    ├── data/                 # JSON data for topics and questions
     └── ...
 ```
 
@@ -30,21 +28,7 @@ This project is a Data Structures and Algorithms (DSA) sheet website that displa
    npm install
    ```
 
-2. **Set up MongoDB connection:**
-   - Create a `.env` file in the `backend` directory
-   - Add your MongoDB connection string:
-     ```
-     PORT=5000
-     MONGODB_URI=mongodb+srv://yourusername:yourpassword@yourcluster.mongodb.net/dsasheet?retryWrites=true&w=majority
-     ```
-
-3. **Seed the database:**
-   ```bash
-   npm run seed
-   ```
-   This will import the data from `backend/data/dsasheet.json` into your MongoDB database.
-
-4. **Start the backend server:**
+2. **Start the backend server:**
    ```bash
    npm run dev
    ```
@@ -95,29 +79,15 @@ This project is a Data Structures and Algorithms (DSA) sheet website that displa
 }
 ```
 
-## Making Changes
+## Adding New Topics or Questions
 
-### To add new topics or questions:
+To add new topics or questions:
 
-1. You can modify the `backend/data/dsasheet.json` file and then run the seed script again:
-   ```bash
-   npm run seed
-   ```
-
-2. Alternatively, you can create API endpoints for creating, updating, and deleting topics and questions.
-
-### To modify the frontend:
-
-The frontend uses React with TypeScript and is styled with Tailwind CSS. Key components:
-
-- `TopicGrid.tsx` - Displays a grid of all topics
-- `TopicPage.tsx` - Shows details of a specific topic and its questions
-- `QuestionList.tsx` - Lists questions for a topic
-- `QuestionCard.tsx` - Displays a single question
+1. Modify the `backend/data/dsasheet.json` file with your new content following the same structure.
+2. The new data will be automatically available through the API endpoints.
 
 ## Troubleshooting
 
-- Make sure MongoDB is running and accessible
-- Check the `.env` file in the backend directory has the correct MongoDB URI
-- Ensure both frontend and backend servers are running
-
+- Ensure the backend server is running on port 5000
+- Check that the JSON file contains valid data in the correct format
+- Verify that frontend is correctly configured to connect to the backend API

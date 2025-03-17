@@ -1,27 +1,85 @@
 
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
-const connectDB = require('./config/db');
-const Topic = require('./models/Topic');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-// Connect to MongoDB
-connectDB();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// API Routes
-app.get('/api/topics', async (req, res) => {
+// Load data from JSON file
+const loadData = () => {
   try {
-    const topics = await Topic.find();
+    const rawData = fs.readFileSync(path.join(__dirname, 'data', 'dsasheet.json'), 'utf8');
+    const data = JSON.parse(rawData);
+    
+    // Process the data to ensure all required fields
+    return {
+      topics: data.topics.map(topic => {
+        // Create slug from name if not present
+        if (!topic.slug) {
+          topic.slug = topic.name.toLowerCase().replace(/\s+/g, '-');
+        }
+        
+        // Process questions
+        if (topic.questions && Array.isArray(topic.questions)) {
+          topic.questions = topic.questions.map(question => {
+            // Map link to url if url is not present
+            if (question.link && !question.url) {
+              question.url = question.link;
+            }
+            
+            // Extract platform from URL if not present
+            if (!question.platform) {
+              const url = question.url || question.link || '';
+              if (url.includes('leetcode.com')) {
+                question.platform = 'LeetCode';
+              } else if (url.includes('codeforces.com')) {
+                question.platform = 'CodeForces';
+              } else if (url.includes('hackerrank.com')) {
+                question.platform = 'HackerRank';
+              } else if (url.includes('geeksforgeeks.org')) {
+                question.platform = 'GeeksforGeeks';
+              } else {
+                question.platform = 'Other';
+              }
+            }
+            
+            // Add default difficulty if not present
+            if (!question.difficulty) {
+              question.difficulty = 'Medium';
+            }
+            
+            return question;
+          });
+        }
+        
+        // Add questionCount
+        topic.questionCount = topic.questions ? topic.questions.length : 0;
+        
+        return topic;
+      })
+    };
+  } catch (error) {
+    console.error('Error loading data:', error);
+    return { topics: [] };
+  }
+};
+
+// Get data
+const data = loadData();
+
+// API Routes
+app.get('/api/topics', (req, res) => {
+  try {
     res.json({
       success: true,
-      data: topics
+      data: data.topics
     });
   } catch (error) {
     console.error('Error fetching topics:', error);
@@ -33,10 +91,10 @@ app.get('/api/topics', async (req, res) => {
   }
 });
 
-app.get('/api/topics/:slug', async (req, res) => {
+app.get('/api/topics/:slug', (req, res) => {
   try {
     const { slug } = req.params;
-    const topic = await Topic.findOne({ slug });
+    const topic = data.topics.find(t => t.slug === slug);
     
     if (!topic) {
       return res.status(404).json({
@@ -60,12 +118,11 @@ app.get('/api/topics/:slug', async (req, res) => {
   }
 });
 
-app.get('/api/questions', async (req, res) => {
+app.get('/api/questions', (req, res) => {
   try {
-    const topics = await Topic.find();
-    const allQuestions = topics.flatMap(topic => 
+    const allQuestions = data.topics.flatMap(topic => 
       topic.questions.map(q => ({
-        ...q.toObject(),
+        ...q,
         topicName: topic.name,
         topicSlug: topic.slug
       }))
@@ -85,7 +142,7 @@ app.get('/api/questions', async (req, res) => {
   }
 });
 
-app.get('/api/search', async (req, res) => {
+app.get('/api/search', (req, res) => {
   try {
     const { query } = req.query;
     
@@ -99,23 +156,17 @@ app.get('/api/search', async (req, res) => {
     const searchTerm = query.toLowerCase();
     
     // Search topics
-    const topics = await Topic.find({
-      $or: [
-        { name: { $regex: searchTerm, $options: 'i' } },
-        { description: { $regex: searchTerm, $options: 'i' } }
-      ]
-    });
+    const topics = data.topics.filter(topic => 
+      topic.name.toLowerCase().includes(searchTerm) || 
+      (topic.description && topic.description.toLowerCase().includes(searchTerm))
+    );
     
     // Search questions
-    const topicsWithMatchingQuestions = await Topic.find({
-      'questions.title': { $regex: searchTerm, $options: 'i' }
-    });
-    
-    const questions = topicsWithMatchingQuestions.flatMap(topic => 
+    const questions = data.topics.flatMap(topic => 
       topic.questions
         .filter(q => q.title.toLowerCase().includes(searchTerm))
         .map(q => ({
-          ...q.toObject(),
+          ...q,
           topicName: topic.name,
           topicSlug: topic.slug
         }))
