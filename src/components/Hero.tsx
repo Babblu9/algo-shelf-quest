@@ -1,5 +1,7 @@
 
 import { ArrowRight } from 'lucide-react';
+import { Button } from './ui/button';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -23,6 +25,18 @@ const Hero = () => {
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-balance animate-fade-down" style={{ animationDelay: '200ms' }}>
             A carefully curated collection of the most important data structures and algorithms problems to ace your technical interviews.
           </p>
+          
+          <div className="animate-fade-up" style={{ animationDelay: '300ms' }}>
+            <Button 
+              size="lg" 
+              className="rounded-full"
+              onClick={() => {
+                document.getElementById('topics')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Get Started <ArrowRight className="ml-1" size={18} />
+            </Button>
+          </div>
         </div>
       </div>
     </section>
