@@ -57,14 +57,6 @@ const Navbar = () => {
                   >
                     Home
                   </Link>
-                  <a 
-                    href="https://github.com" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="px-3 py-2 rounded-md text-sm font-medium text-foreground/80 transition-colors hover:bg-secondary hover:text-foreground"
-                  >
-                    GitHub
-                  </a>
                 </nav>
               </>
             ) : (
