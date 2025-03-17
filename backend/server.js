@@ -25,18 +25,48 @@ const loadData = () => {
         if (!topic.slug) {
           topic.slug = topic.name.toLowerCase().replace(/\s+/g, '-');
         }
+
+        // Add description and icon if not present
+        if (!topic.description) {
+          const descriptions = {
+            'Array': 'Linear data structures that store elements of the same type in contiguous memory locations.',
+            'LinkedList': 'Linear data structures where elements are stored in nodes connected by pointers.',
+            'Recursion': 'A programming technique where a function calls itself to solve a problem.',
+            'Backtracking': 'An algorithmic technique for solving problems recursively by building candidates to solutions incrementally.',
+            'Tree': 'Hierarchical data structures with a root node and subtrees of children nodes.',
+            'Graph': 'Non-linear data structures consisting of vertices and edges.',
+            'DP': 'Method for solving complex problems by breaking them down into simpler subproblems.',
+            'String': 'Sequences of characters used to represent text.',
+            'Heap': 'Tree-based data structures that satisfy the heap property.',
+            'Greedy': 'Algorithms that make locally optimal choices at each stage.'
+          };
+          
+          topic.description = descriptions[topic.name] || `Problems related to ${topic.name} data structures and algorithms.`;
+        }
+        
+        if (!topic.icon) {
+          const icons = {
+            'Array': '📊',
+            'LinkedList': '🔗',
+            'Recursion': '🔄',
+            'Backtracking': '🔙',
+            'Tree': '🌳',
+            'Graph': '📈',
+            'DP': '🧩',
+            'String': '🔤',
+            'Heap': '📚',
+            'Greedy': '👋'
+          };
+          
+          topic.icon = icons[topic.name] || '📝';
+        }
         
         // Process questions
         if (topic.questions && Array.isArray(topic.questions)) {
           topic.questions = topic.questions.map(question => {
-            // Map link to url if url is not present
-            if (question.link && !question.url) {
-              question.url = question.link;
-            }
-            
             // Extract platform from URL if not present
             if (!question.platform) {
-              const url = question.url || question.link || '';
+              const url = question.link || '';
               if (url.includes('leetcode.com')) {
                 question.platform = 'LeetCode';
               } else if (url.includes('codeforces.com')) {
@@ -48,6 +78,11 @@ const loadData = () => {
               } else {
                 question.platform = 'Other';
               }
+            }
+            
+            // Map link to url if url is not present
+            if (question.link && !question.url) {
+              question.url = question.link;
             }
             
             // Add default difficulty if not present

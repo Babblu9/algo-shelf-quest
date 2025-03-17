@@ -17,6 +17,9 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
     setIsCompleted(!isCompleted);
   };
 
+  // Use link if url is not available
+  const questionLink = question.url || question.link || '';
+
   return (
     <div 
       className={`p-4 rounded-lg glass glass-hover border-l-4 transition-all ${
@@ -46,16 +49,16 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
           
           <div className="flex items-center gap-2 ml-7">
             <span className="text-xs bg-secondary px-2 py-0.5 rounded-full">
-              {question.platform}
+              {question.platform || 'LeetCode'}
             </span>
-            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${getDifficultyClass(question.difficulty)}`}>
-              {question.difficulty}
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${getDifficultyClass(question.difficulty || 'Medium')}`}>
+              {question.difficulty || 'Medium'}
             </span>
           </div>
         </div>
         
         <a
-          href={question.url}
+          href={questionLink}
           target="_blank"
           rel="noopener noreferrer"
           className={`flex items-center gap-1 text-sm font-medium text-primary transition-all ${

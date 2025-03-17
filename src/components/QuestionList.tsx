@@ -7,9 +7,28 @@ interface QuestionListProps {
 }
 
 const QuestionList = ({ questions }: QuestionListProps) => {
-  // Group questions by difficulty
+  // If questions don't have difficulty, we'll show them all together
+  const hasDifficulties = questions.some(q => q.difficulty);
+  
+  if (!hasDifficulties) {
+    return (
+      <div className="space-y-3">
+        {questions.map((question, index) => (
+          <div 
+            key={`${question.title}-${index}`}
+            className="animate-fade-up"
+            style={{ animationDelay: `${index * 50}ms` }}
+          >
+            <QuestionCard question={question} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Group questions by difficulty if difficulties exist
   const groupedQuestions = questions.reduce((acc, question) => {
-    const { difficulty } = question;
+    const difficulty = question.difficulty || 'Medium';
     if (!acc[difficulty]) {
       acc[difficulty] = [];
     }
@@ -47,7 +66,7 @@ const QuestionList = ({ questions }: QuestionListProps) => {
             <div className="space-y-3">
               {questionsForDifficulty.map((question, index) => (
                 <div 
-                  key={question.id}
+                  key={`${question.title}-${index}`}
                   className="animate-fade-up"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
